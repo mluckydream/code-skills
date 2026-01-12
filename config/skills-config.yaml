@@ -1,0 +1,238 @@
+# DevFlow Configuration
+
+# Global Settings
+language: en-US
+output_format: markdown
+silent_execution: true
+platform: claude  # claude, codex, or cursor
+
+# ========== Workflow Skills ==========
+
+skills:
+  # Standup Skill - Daily Startup
+  standup:
+    enabled: true
+    auto_load: false
+    git_sync: true
+    scan_dirs:
+      - tasks/active
+      - tasks/backlog
+      - tasks/recurring
+    upcoming_days: 7
+    show_long_term: true
+    group_by_project: false
+    highlight_overdue: true
+    timeout: 60
+
+  # Wrap Skill - End of Day
+  wrap:
+    enabled: true
+    auto_load: false
+    auto_commit_suggest: true
+    auto_push: false
+    include_code_stats: true
+    include_notes: true
+    archive_completed_tasks: true
+    timeout: 120
+
+  # Task Skill - Task Management
+  task:
+    enabled: true
+    auto_load: false
+    auto_id: true
+    id_prefix: "TASK"
+    id_format: "{prefix}-{number:03d}"
+    auto_tags: true
+    default_priority: P2
+    default_status: todo
+    archive_on_complete: true
+    timeout: 30
+
+  # Note Skill - Quick Notes
+  note:
+    enabled: true
+    auto_load: false
+    auto_date: true
+    auto_type_detect: true
+    default_type: note
+    include_in_wrap: true
+    storage_format: daily  # daily | weekly | monthly
+    timeout: 30
+
+  # ========== Development Skills ==========
+
+  # Spec Skill - Requirements Analysis
+  spec:
+    enabled: true
+    auto_load: false
+    scoring_threshold: 7
+    max_follow_up_rounds: 3
+    auto_proceed: false
+    include_thinking: true
+    timeout: 60
+    require_kb: false
+
+  # Arch Skill - Solution Design
+  arch:
+    enabled: true
+    auto_load: false
+    solution_options: 3
+    auto_select_recommended: false
+    require_user_approval: true
+    include_diagrams: true
+    task_granularity: medium  # fine, medium, coarse
+    timeout: 120
+
+  # Dev Skill - Code Implementation
+  dev:
+    enabled: true
+    auto_load: false
+    backup_before_changes: true
+    run_tests: true
+    require_test_pass: true
+    update_kb: true
+    auto_migrate: true
+    code_quality_check: true
+    timeout: 600
+
+  # Flow Skill - Full Development Flow
+  flow:
+    enabled: true
+    auto_load: false
+    auto_select_solution: true
+    pause_on_low_score: true
+    pause_on_high_risk: true
+    timeout: 900
+
+# ========== Routing Settings ==========
+
+routing:
+  default_skill: spec
+  fallback_behavior: ask_user
+  uncertainty_threshold: 0.7
+  conservative_routing: true
+  risk_escalation: true
+  require_confirmation_for: [high, critical]
+  context_timeout: 300
+  max_context_depth: 5
+  prefer_silent_execution: false
+  auto_proceed_threshold: 0.9
+
+  intent_keywords:
+    question: [what, why, how, where, when, explain, describe, show, tell]
+    modification: [add, create, update, fix, change, modify, implement, build]
+    analysis: [analyze, review, check, inspect, examine, evaluate, assess]
+    refactoring: [refactor, optimize, improve, clean, restructure, simplify]
+    testing: [test, verify, validate, check, ensure]
+    documentation: [document, explain, describe, write docs]
+
+# ========== Workflow Settings ==========
+
+workflow:
+  # Output directory (personal workspace)
+  output_dir: .worklogs
+  
+  # Subdirectory configuration
+  worklogs_dir: worklogs
+  tasks_dir: tasks
+  memos_dir: memos
+
+  # Task metadata schema
+  task_metadata:
+    required:
+      - id
+      - title
+      - status
+      - priority
+    optional:
+      - due
+      - expected
+      - tags
+      - assignee
+      - project
+      - estimate
+      - actual
+      - progress
+      - blocked_reason
+
+  # Status definitions
+  status_values:
+    - todo
+    - in-progress
+    - blocked
+    - review
+    - done
+
+  # Priority definitions
+  priority_values:
+    P0: "Critical - Handle immediately"
+    P1: "High - Complete this week"
+    P2: "Medium - On schedule"
+    P3: "Low - When available"
+
+  # Auto-tagging rules
+  auto_tag_rules:
+    - keywords: [bug, fix, issue, error]
+      tag: bug
+    - keywords: [feature, add, new, implement]
+      tag: feature
+    - keywords: [refactor, restructure, cleanup]
+      tag: refactor
+    - keywords: [doc, docs, documentation]
+      tag: docs
+    - keywords: [test, testing, spec]
+      tag: test
+    - keywords: [perf, performance, optimize]
+      tag: performance
+
+  # Note types
+  note_types:
+    idea:
+      marker: "[idea]"
+      prefixes: ["idea:", "thought:"]
+    todo:
+      marker: "[todo]"
+      prefixes: ["todo:", "reminder:"]
+    bug:
+      marker: "[bug]"
+      prefixes: ["bug:", "issue:"]
+    question:
+      marker: "[?]"
+      prefixes: ["?", "why", "how"]
+    note:
+      marker: "[note]"
+      prefixes: []  # Default
+
+# ========== Command Routing ==========
+
+commands:
+  workflow:
+    - pattern: "^@standup"
+      skill: standup
+      description: "Daily startup, sync and review tasks"
+    - pattern: "^@wrap"
+      skill: wrap
+      description: "End of day, commit and log work"
+    - pattern: "^@task"
+      skill: task
+      description: "Task management"
+    - pattern: "^@note"
+      skill: note
+      description: "Quick notes and ideas"
+    - pattern: "^@init"
+      skill: init
+      description: "Initialize project"
+
+  development:
+    - pattern: "^@spec"
+      skill: spec
+      description: "Requirements analysis"
+    - pattern: "^@arch"
+      skill: arch
+      description: "Architecture design"
+    - pattern: "^@dev"
+      skill: dev
+      description: "Code implementation"
+    - pattern: "^@flow"
+      skill: flow
+      description: "Full flow: spec -> arch -> dev"
