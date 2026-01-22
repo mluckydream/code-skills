@@ -6,6 +6,26 @@
 [![Platform](https://img.shields.io/badge/Platform-Claude%20%7C%20Codex%20%7C%20Cursor-green)]()
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellow)]()
 
+## Why DevFlow?
+
+AI coding assistants are powerful, but they lack **memory** and **structure**:
+
+- **Context Loss** - AI forgets what you did yesterday, last week, or across sessions
+- **Inconsistent Workflows** - No standardized process for requirements → design → implementation
+- **Scattered Information** - Tasks, notes, and decisions get lost in chat history
+- **Manual Tracking** - You manually create work logs, summaries, and documentation
+
+DevFlow solves this by providing:
+
+- **Persistent Memory** - Automatic work logs, task tracking, and project documentation
+- **Structured Workflows** - Enforced spec → arch → dev flow prevents skipping steps
+- **Centralized Storage** - All tasks, notes, and logs saved to `.devflow/` workspace
+- **Automation** - Daily standup, end-of-day wrap, weekly summaries run automatically
+
+**Result:** AI assistants become more reliable and effective with persistent context.
+
+---
+
 ## What is DevFlow?
 
 DevFlow is a **skills system** that extends AI coding assistants with structured workflows. It provides **9 skills** organized into two categories:
